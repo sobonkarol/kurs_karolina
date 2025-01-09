@@ -1,4 +1,71 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
+
+// Stylowanie komponentów
+const Container = styled.div`
+  padding: 20px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f7f7f7, #eaeaea);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+`;
+
+const QuizBox = styled.div`
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 600px;
+`;
+
+const Title = styled.h1`
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  font-weight: 600;
+`;
+
+const Question = styled.h2`
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #34495e;
+`;
+
+const AnswerLabel = styled.label`
+  display: block;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #555;
+  cursor: pointer;
+
+  input {
+    margin-right: 10px;
+  }
+`;
+
+const Button = styled.button`
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: white;
+  background-color: #34495e;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+  margin-top: 20px;
+
+  &:hover {
+    background-color: #2c3e50;
+    transform: scale(1.05);
+  }
+`;
 
 const Quiz = () => {
   const questions = [
@@ -12,29 +79,21 @@ const Quiz = () => {
       answers: ['Zestawienie przychodów i kosztów', 'Zestawienie aktywów i pasywów', 'Dokument podatkowy'],
       correct: 1,
     },
-    {
-      question: 'Co oznacza termin "kapitał własny"?',
-      answers: ['Zobowiązania wobec banków', 'Majątek właścicieli firmy', 'Należności od klientów'],
-      correct: 1,
-    },
     // Dodaj inne pytania w podobnym formacie
   ];
 
   const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(null));
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
 
   const handleAnswerChange = (questionIndex, answerIndex) => {
     const newAnswers = [...userAnswers];
     newAnswers[questionIndex] = answerIndex;
     setUserAnswers(newAnswers);
-    setErrorMessage(''); // Usunięcie błędu po zaznaczeniu odpowiedzi
   };
 
   const handleSubmit = () => {
-    // Sprawdzenie, czy wszystkie pytania zostały odpowiedziane
     if (userAnswers.some((answer) => answer === null)) {
-      setErrorMessage('Odpowiedz na wszystkie pytania przed zakończeniem testu.');
+      alert('Odpowiedz na wszystkie pytania przed zakończeniem testu.');
       return;
     }
     setIsSubmitted(true);
@@ -43,7 +102,6 @@ const Quiz = () => {
   const restartQuiz = () => {
     setUserAnswers(Array(questions.length).fill(null));
     setIsSubmitted(false);
-    setErrorMessage('');
   };
 
   const calculateScore = () => {
@@ -56,16 +114,16 @@ const Quiz = () => {
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      {!isSubmitted ? (
-        <div>
-          <h1>Quiz z rachunkowości i finansów</h1>
-          <form>
+    <Container>
+      <QuizBox>
+        {!isSubmitted ? (
+          <>
+            <Title>Quiz z rachunkowości i finansów</Title>
             {questions.map((q, questionIndex) => (
-              <div key={questionIndex} style={{ marginBottom: '20px' }}>
-                <h2>{q.question}</h2>
+              <div key={questionIndex}>
+                <Question>{q.question}</Question>
                 {q.answers.map((answer, answerIndex) => (
-                  <label key={answerIndex} style={{ display: 'block', margin: '10px 0' }}>
+                  <AnswerLabel key={answerIndex}>
                     <input
                       type="radio"
                       name={`question-${questionIndex}`}
@@ -74,34 +132,20 @@ const Quiz = () => {
                       onChange={() => handleAnswerChange(questionIndex, answerIndex)}
                     />
                     {String.fromCharCode(65 + answerIndex)}. {answer}
-                  </label>
+                  </AnswerLabel>
                 ))}
               </div>
             ))}
-            {errorMessage && (
-              <p style={{ color: 'red', fontWeight: 'bold' }}>{errorMessage}</p>
-            )}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              style={{ padding: '10px 20px', fontSize: '18px', cursor: 'pointer' }}
-            >
-              Zakończ test
-            </button>
-          </form>
-        </div>
-      ) : (
-        <div>
-          <h2>Twój wynik: {calculateScore()} / {questions.length}</h2>
-          <button
-            onClick={restartQuiz}
-            style={{ padding: '10px 20px', fontSize: '18px', cursor: 'pointer' }}
-          >
-            Spróbuj ponownie
-          </button>
-        </div>
-      )}
-    </div>
+            <Button onClick={handleSubmit}>Zakończ test</Button>
+          </>
+        ) : (
+          <>
+            <Title>Twój wynik: {calculateScore()} / {questions.length}</Title>
+            <Button onClick={restartQuiz}>Spróbuj ponownie</Button>
+          </>
+        )}
+      </QuizBox>
+    </Container>
   );
 };
 
