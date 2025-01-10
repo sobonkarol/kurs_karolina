@@ -1,17 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/Home';
 import Quiz from './components/Quiz';
 
 function App() {
+  const [nickname, setNickname] = useState('');
+
   return (
     <Router>
       <Routes>
-        {/* Strona wstępna */}
-        <Route path="/" element={<Home />} />
-
-        {/* Strona quizu */}
-        <Route path="/quiz" element={<Quiz />} />
+        <Route path="/" element={<Home setNickname={setNickname} />} />
+        <Route path="/quiz" element={<Quiz nickname={nickname} />} />
       </Routes>
     </Router>
   );

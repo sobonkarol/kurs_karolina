@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 // Stylowanie komponentów
@@ -65,9 +65,13 @@ const Button = styled.button`
     background-color: #2c3e50;
     transform: scale(1.05);
   }
+
+  &:not(:last-child) {
+    margin-right: 10px;
+  }
 `;
 
-const Quiz = () => {
+const Quiz = ({ nickname }) => {
   const questions = [
     {
       question: 'Co to jest aktywa?',
@@ -79,11 +83,11 @@ const Quiz = () => {
       answers: ['Zestawienie przychodów i kosztów', 'Zestawienie aktywów i pasywów', 'Dokument podatkowy'],
       correct: 1,
     },
-    // Dodaj inne pytania w podobnym formacie
   ];
 
   const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(null));
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [ranking, setRanking] = useState([]);
 
   const handleAnswerChange = (questionIndex, answerIndex) => {
     const newAnswers = [...userAnswers];
@@ -96,7 +100,21 @@ const Quiz = () => {
       alert('Odpowiedz na wszystkie pytania przed zakończeniem testu.');
       return;
     }
+
+    const score = calculateScore();
+    const newRanking = [...ranking, { nickname, score }];
+    newRanking.sort((a, b) => b.score - a.score); // Sortowanie wyników malejąco
+    setRanking(newRanking);
+
+    localStorage.setItem('quizRanking', JSON.stringify(newRanking));
     setIsSubmitted(true);
+  };
+
+  const resetRanking = () => {
+    if (window.confirm('Czy na pewno chcesz zresetować ranking?')) {
+      setRanking([]);
+      localStorage.removeItem('quizRanking');
+    }
   };
 
   const restartQuiz = () => {
@@ -113,12 +131,17 @@ const Quiz = () => {
     }, 0);
   };
 
+  useEffect(() => {
+    const savedRanking = JSON.parse(localStorage.getItem('quizRanking')) || [];
+    setRanking(savedRanking);
+  }, []);
+
   return (
     <Container>
       <QuizBox>
         {!isSubmitted ? (
           <>
-            <Title>Quiz z rachunkowości i finansów</Title>
+            <Title>Quiz dla {nickname}</Title>
             {questions.map((q, questionIndex) => (
               <div key={questionIndex}>
                 <Question>{q.question}</Question>
@@ -141,7 +164,18 @@ const Quiz = () => {
         ) : (
           <>
             <Title>Twój wynik: {calculateScore()} / {questions.length}</Title>
-            <Button onClick={restartQuiz}>Spróbuj ponownie</Button>
+            <h2>Ranking:</h2>
+            <ul>
+              {ranking.map((entry, index) => (
+                <li key={index}>
+                  {index + 1}. {entry.nickname} - {entry.score} punktów
+                </li>
+              ))}
+            </ul>
+            <div>
+              <Button onClick={restartQuiz}>Spróbuj ponownie</Button>
+              <Button onClick={resetRanking}>Resetuj ranking</Button>
+            </div>
           </>
         )}
       </QuizBox>
