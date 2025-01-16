@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -141,7 +141,14 @@ const Quiz = () => {
   const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(null));
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState(false);
+
+  // Sprawdź, czy test został już przesłany
+  useEffect(() => {
+    const submitted = localStorage.getItem('quizSubmitted');
+    if (submitted === 'true') {
+      setIsSubmitted(true);
+    }
+  }, []);
 
   const handleAnswerChange = (questionIndex, answerIndex) => {
     const newAnswers = [...userAnswers];
@@ -159,9 +166,9 @@ const Quiz = () => {
 
     // Zapis wyniku do bazy
     try {
-      await axios.post('https://szkoleniekostarskak.netlify.app/.netlify/functions/saveResults', { nickname, score }); // Upewnij się, że backend jest poprawnie skonfigurowany
+      await axios.post('https://szkoleniekostarskak.netlify.app/.netlify/functions/saveResults', { nickname, score });
       setIsSubmitted(true);
-      setSubmitMessage(true);
+      localStorage.setItem('quizSubmitted', 'true'); // Zapis do localStorage
     } catch (err) {
       console.error('Błąd podczas zapisywania wyniku:', err);
     }
@@ -178,7 +185,9 @@ const Quiz = () => {
 
   return (
     <Container>
-      {!isSubmitted ? (
+      {isSubmitted ? (
+        <Message>Odpowiedzi zostały już wysłane.</Message>
+      ) : (
         <QuizBox>
           <Title>Quiz dla {nickname}</Title>
           {questions.map((q, questionIndex) => (
@@ -200,22 +209,14 @@ const Quiz = () => {
           ))}
           <Button onClick={() => setShowModal(true)}>Zakończ test</Button>
         </QuizBox>
-      ) : (
-        <Message>Dziękuję, wynik został zapisany.</Message>
       )}
 
       {showModal && (
         <ModalOverlay>
           <ModalContent>
-            {!submitMessage ? (
-              <>
-                <ModalTitle>Czy na pewno chcesz zakończyć test?</ModalTitle>
-                <ModalButton onClick={handleSubmit}>Tak, wyślij</ModalButton>
-                <ModalButton onClick={() => setShowModal(false)}>Wróć do testu</ModalButton>
-              </>
-            ) : (
-              <Message>Dziękuję, wynik został zapisany.</Message>
-            )}
+            <ModalTitle>Czy na pewno chcesz zakończyć test?</ModalTitle>
+            <ModalButton onClick={handleSubmit}>Tak, wyślij</ModalButton>
+            <ModalButton onClick={() => setShowModal(false)}>Wróć do testu</ModalButton>
           </ModalContent>
         </ModalOverlay>
       )}
