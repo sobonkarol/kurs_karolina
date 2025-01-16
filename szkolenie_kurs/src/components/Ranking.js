@@ -46,7 +46,7 @@ const Ranking = () => {
   useEffect(() => {
     const fetchRanking = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/api/results'); // Upewnij się, że port backendu jest prawidłowy
+        const response = await axios.get('https://kurs-karolina.onrender.com/api/results'); // Upewnij się, że port backendu jest prawidłowy
         setRanking(response.data);
       } catch (err) {
         console.error('Błąd podczas pobierania rankingu:', err);

@@ -159,7 +159,7 @@ const Quiz = () => {
 
     // Zapis wyniku do bazy
     try {
-      await axios.post('http://localhost:5001/api/results', { nickname, score }); // Upewnij się, że backend jest poprawnie skonfigurowany
+      await axios.post('https://kurs-karolina.onrender.com/api/results', { nickname, score }); // Upewnij się, że backend jest poprawnie skonfigurowany
       setIsSubmitted(true);
       setSubmitMessage(true);
     } catch (err) {
