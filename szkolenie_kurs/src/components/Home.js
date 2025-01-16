@@ -21,14 +21,14 @@ const HeroSection = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 70vh;
+  height: 60vh;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${backgroundImage}) no-repeat center center;
   background-size: cover;
   color: white;
 `;
 
 const HeroTitle = styled.h1`
-  font-size: 3rem;
+  font-size: 2.5rem;
   padding: 20px;
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 8px;
