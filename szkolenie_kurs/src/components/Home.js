@@ -21,14 +21,14 @@ const HeroSection = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 60vh;
+  height: 55vh;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${backgroundImage}) no-repeat center center;
   background-size: cover;
   color: white;
 `;
 
 const HeroTitle = styled.h1`
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   padding: 20px;
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 8px;
@@ -85,8 +85,8 @@ const InfoBox = styled.div`
 const CareerSection = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center; /* Wyśrodkowanie poziome */
-  padding: 50px 30px; /* Większy odstęp */
+  justify-content: center;
+  padding: 50px 30px;
   background-color: #d6d6d6;
 
   @media (max-width: 768px) {
@@ -96,12 +96,11 @@ const CareerSection = styled.div`
 `;
 
 const DecorativeBar = styled.div`
-  width: 300px; /* Szerokość paska */
-  height: 5px; /* Wysokość paska */
-  background-color:rgb(108, 129, 146); /* Kolor paska */
-  margin-bottom: 15px; /* Odstęp od tekstu */
-  border-radius: 5px; /* Zaokrąglenie brzegów */
-  margin-left: 0; /* Pasek wyrównany do początku tekstu */
+  width: 300px;
+  height: 5px;
+  background-color:rgb(132, 147, 159);
+  margin-bottom: 15px;
+  border-radius: 5px;
 
   @media (max-width: 768px) {
     margin-left: auto;
@@ -133,12 +132,12 @@ const CareerText = styled.div`
 `;
 
 const CareerImage = styled.img`
-  width: 40%; /* Trochę większy obraz */
+  width: 40%;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 768px) {
-    width: 80%; /* Dopasowanie dla urządzeń mobilnych */
+    width: 80%;
   }
 `;
 
@@ -186,15 +185,16 @@ const PopupContainer = styled.div`
 
 const PopupContent = styled.div`
   background: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 30px;
+  border-radius: 12px;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 300px;
+  width: 400px;
+  position: relative;
 
   h3 {
     font-size: 1.5rem;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: #2c2c2c;
   }
 
@@ -223,6 +223,19 @@ const PopupContent = styled.div`
   }
 `;
 
+const CloseButton = styled.button`
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background: none !important; /* Wymuszenie braku tła */
+  border: none !important; /* Wymuszenie braku obramowania */
+  font-size: 1.5rem !important; /* Wymuszenie rozmiaru krzyżyka */
+  color: black !important; /* Wymuszenie koloru */
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+`;
+
 const Home = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
@@ -245,15 +258,15 @@ const Home = () => {
         <HeroTitle>Młodzi księgowi - przyszłość w liczbach</HeroTitle>
       </HeroSection>
 
- {/* Sekcja 2 */}
- <InfoSection>
+      {/* Sekcja 2 */}
+      <InfoSection>
         <InfoBox bgColor="#f5f5f5" borderColor="#8c8c8c" iconColor="#8c8c8c">
           <FaRegBuilding />
           <h3>Dlaczego warto zainteresować się księgowością?</h3>
           <ul>
             <li>Stabilna praca i wysokie zarobki</li>
-            <li>Możliwość pracy w różnych sektorach. Od firm prywatnych, przez banki, po instytucje rządowe</li>
-            <li>Dynamiczny rozwój kariery: specjalista, analityk, audytor czy główny księgowy</li>
+            <li>Możliwość pracy w różnych sektorach</li>
+            <li>Dynamiczny rozwój kariery</li>
           </ul>
         </InfoBox>
 
@@ -261,9 +274,9 @@ const Home = () => {
           <FaLightbulb />
           <h3>Co zyskujesz ucząc się księgowości?</h3>
           <ul>
-            <li>Umiejętności zarządzania finansami osobistymi i firmowymi</li>
-            <li>Znajomość zagadnień podatkowych i prawnych</li>
-            <li>Rozwinięcie zdolności analitycznych i logicznego myślenia</li>
+            <li>Umiejętności zarządzania finansami</li>
+            <li>Znajomość zagadnień podatkowych</li>
+            <li>Rozwinięcie zdolności analitycznych</li>
           </ul>
         </InfoBox>
 
@@ -271,27 +284,27 @@ const Home = () => {
           <FaGraduationCap />
           <h3>Jak wygląda ścieżka edukacyjna?</h3>
           <ul>
-             <li>Szkoła średnia – przedmioty związane z podstawami ekonomii i rachunkowości.</li>
-             <li>Studia – kierunki takie jak księgowość, finanse czy ekonomia.</li>
-             <li>Certyfikaty zawodowe – np. ACCA, CIMA, czy certyfikat biegłego rewidenta.</li>
+            <li>Szkoła średnia</li>
+            <li>Studia</li>
+            <li>Certyfikaty zawodowe</li>
           </ul>
         </InfoBox>
       </InfoSection>
 
-{/* Sekcja 3 */}
-<CareerSection>
-  <CareerText>
-    <DecorativeBar /> {/* Dodanie ozdobnego paska */}
-    <h3>Zawód księgowego</h3>
-    <p>
-      Zawód księgowego oferuje wiele możliwości i satysfakcji zawodowej. To ścieżka kariery dla osób z pasją do finansów i precyzji, zapewniająca stabilność, rozwój i sukces.
-    </p>
-    <p>
-      Dzięki dynamicznie zmieniającym się przepisom prawnym i podatkowym, księgowość pozostaje wyzwaniem, ale również dziedziną zapewniającą ciągły rozwój i doskonalenie umiejętności. To praca idealna dla osób, które lubią planowanie, analizę oraz wspieranie podejmowania strategicznych decyzji biznesowych.
-    </p>
-  </CareerText>
-  <CareerImage src={accountantImage} alt="Człowiek z laptopem" />
-</CareerSection>
+      {/* Sekcja 3 */}
+      <CareerSection>
+        <CareerText>
+          <DecorativeBar />
+          <h3>Zawód księgowego</h3>
+          <p>
+            Zawód księgowego oferuje wiele możliwości i satysfakcji zawodowej. To ścieżka kariery dla osób z pasją do finansów i precyzji, zapewniająca stabilność, rozwój i sukces.
+          </p>
+          <p>
+            Dzięki dynamicznie zmieniającym się przepisom prawnym i podatkowym, księgowość pozostaje wyzwaniem, ale również dziedziną zapewniającą ciągły rozwój i doskonalenie umiejętności. To praca idealna dla osób, które lubią planowanie, analizę oraz wspieranie podejmowania strategicznych decyzji biznesowych.
+          </p>
+        </CareerText>
+        <CareerImage src={accountantImage} alt="Człowiek z laptopem" />
+      </CareerSection>
 
       {/* Sekcja 4 */}
       <FooterSection>
@@ -301,16 +314,17 @@ const Home = () => {
 
       {showPopup && (
         <PopupContainer>
-          <PopupContent>
-            <h3>Podaj swoje imię i nazwisko</h3>
-            <input
-              type="text"
-              placeholder="Imię i nazwisko"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-            />
-            <button onClick={handlePopupSubmit}>Rozpocznij kurs</button>
-          </PopupContent>
+<PopupContent>
+  <CloseButton onClick={() => setShowPopup(false)}>×</CloseButton>
+  <h3>Podaj swoje imię i nazwisko</h3>
+  <input
+    type="text"
+    placeholder="Imię i nazwisko"
+    value={nickname}
+    onChange={(e) => setNickname(e.target.value)}
+  />
+  <button onClick={handlePopupSubmit}>Rozpocznij kurs</button>
+</PopupContent>
         </PopupContainer>
       )}
     </MainContainer>
