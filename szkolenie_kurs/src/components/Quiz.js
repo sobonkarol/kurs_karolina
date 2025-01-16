@@ -140,7 +140,7 @@ const Quiz = () => {
   return (
     <Container>
       {isSubmitted ? (
-        <Message>Odpowiedzi zostały już wysłane.</Message>
+        <Message>Odpowiedzi zostały wysłane.</Message>
       ) : (
         <QuizBox>
           <Title>Quiz dla {nickname}</Title>
