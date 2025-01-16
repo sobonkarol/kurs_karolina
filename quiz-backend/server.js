@@ -9,7 +9,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Połączenie z MongoDB
-mongoose.connect('mongodb+srv://karolsobon:NmwHdRNMFOcM5zW1@cluster0.pappf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
+mongoose.connect(process.env.MANGOOSE);
 
 // Model wyniku
 const Result = mongoose.model('Result', {
@@ -32,7 +32,8 @@ app.get('/api/results', async (req, res) => {
 });
 
 // Start serwera
-const PORT = 5001;
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-  console.log(`Serwer działa na porcie ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
