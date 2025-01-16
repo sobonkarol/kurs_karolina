@@ -159,7 +159,7 @@ const Quiz = () => {
 
     // Zapis wyniku do bazy
     try {
-      await axios.post('https://szkoleniekostarskak.netlify.app/.netlify/functions/saveResult', { nickname, score }); // Upewnij się, że backend jest poprawnie skonfigurowany
+      await axios.post('https://szkoleniekostarskak.netlify.app/.netlify/functions/saveResults', { nickname, score }); // Upewnij się, że backend jest poprawnie skonfigurowany
       setIsSubmitted(true);
       setSubmitMessage(true);
     } catch (err) {
