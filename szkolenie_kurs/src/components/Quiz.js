@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -120,7 +121,10 @@ const ModalButton = styled(Button)`
   }
 `;
 
-const Quiz = ({ nickname }) => {
+const Quiz = () => {
+  const { state } = useLocation();
+  const { nickname } = state || { nickname: 'Nieznany użytkownik' }; // Domyślna wartość
+
   const questions = [
     {
       question: 'Co to jest aktywa?',
@@ -136,8 +140,8 @@ const Quiz = ({ nickname }) => {
 
   const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(null));
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [showModal, setShowModal] = useState(false); // Stan dla popupu
-  const [submitMessage, setSubmitMessage] = useState(false); // Czy wynik został zapisany
+  const [showModal, setShowModal] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState(false);
 
   const handleAnswerChange = (questionIndex, answerIndex) => {
     const newAnswers = [...userAnswers];
@@ -155,9 +159,9 @@ const Quiz = ({ nickname }) => {
 
     // Zapis wyniku do bazy
     try {
-      await axios.post('http://localhost:5001/api/results', { nickname, score }); // Upewnij się, że port backendu jest prawidłowy
+      await axios.post('http://localhost:5001/api/results', { nickname, score }); // Upewnij się, że backend jest poprawnie skonfigurowany
       setIsSubmitted(true);
-      setSubmitMessage(true); // Pokazanie komunikatu w popupie
+      setSubmitMessage(true);
     } catch (err) {
       console.error('Błąd podczas zapisywania wyniku:', err);
     }
