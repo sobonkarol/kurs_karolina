@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
-import backgroundImage from '../src/front.jpg'; // Upewnij się, że ścieżka do obrazu jest poprawna
+import backgroundImage from '../front.jpg'; // Upewnij się, że ścieżka do obrazu jest poprawna
 
 // Stylowanie kontenera strony głównej
 const HomeContainer = styled.div`
