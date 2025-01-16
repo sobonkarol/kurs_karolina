@@ -265,8 +265,8 @@ const Home = () => {
           <h3>Dlaczego warto zainteresować się księgowością?</h3>
           <ul>
             <li>Stabilna praca i wysokie zarobki</li>
-            <li>Możliwość pracy w różnych sektorach</li>
-            <li>Dynamiczny rozwój kariery</li>
+            <li>Możliwość pracy w różnych sektorach. Od firm prywatnych, przez banki, po instytucje rządowe</li>
+            <li>Dynamiczny rozwój kariery: specjalista, analityk, audytor czy główny księgowy</li>
           </ul>
         </InfoBox>
 
@@ -274,9 +274,9 @@ const Home = () => {
           <FaLightbulb />
           <h3>Co zyskujesz ucząc się księgowości?</h3>
           <ul>
-            <li>Umiejętności zarządzania finansami</li>
-            <li>Znajomość zagadnień podatkowych</li>
-            <li>Rozwinięcie zdolności analitycznych</li>
+            <li>Umiejętności zarządzania finansami osobistymi i firmowymi</li>
+            <li>Znajomość zagadnień podatkowych i prawnych</li>
+            <li>Rozwinięcie zdolności analitycznych i logicznego myślenia</li>
           </ul>
         </InfoBox>
 
@@ -284,9 +284,9 @@ const Home = () => {
           <FaGraduationCap />
           <h3>Jak wygląda ścieżka edukacyjna?</h3>
           <ul>
-            <li>Szkoła średnia</li>
-            <li>Studia</li>
-            <li>Certyfikaty zawodowe</li>
+             <li>Szkoła średnia – przedmioty związane z podstawami ekonomii i rachunkowości.</li>
+             <li>Studia – kierunki takie jak księgowość, finanse czy ekonomia.</li>
+             <li>Certyfikaty zawodowe – np. ACCA, CIMA, czy certyfikat biegłego rewidenta.</li>
           </ul>
         </InfoBox>
       </InfoSection>
