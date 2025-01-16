@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 // Stylowanie komponentów
 const Container = styled.div`
   padding: 20px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f7f7f7, #eaeaea);
+  background: linear-gradient(135deg, #eef2f3, #8e9eab);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -16,30 +17,30 @@ const Container = styled.div`
 const QuizBox = styled.div`
   background: white;
   padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
   width: 90%;
   max-width: 600px;
 `;
 
 const Title = styled.h1`
   text-align: center;
-  color: #2c3e50;
+  color: #34495e;
   margin-bottom: 20px;
   font-size: 2rem;
   font-weight: 600;
 `;
 
 const Question = styled.h2`
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   margin-bottom: 20px;
-  color: #34495e;
+  color: #4a4a4a;
 `;
 
 const AnswerLabel = styled.label`
   display: block;
   margin-bottom: 15px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 400;
   color: #555;
   cursor: pointer;
@@ -50,11 +51,11 @@ const AnswerLabel = styled.label`
 `;
 
 const Button = styled.button`
-  padding: 15px 30px;
-  font-size: 1.2rem;
+  padding: 12px 25px;
+  font-size: 1.1rem;
   font-weight: 600;
   color: white;
-  background-color: #34495e;
+  background-color: #5a9fd4;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -62,12 +63,60 @@ const Button = styled.button`
   margin-top: 20px;
 
   &:hover {
-    background-color: #2c3e50;
+    background-color: #4682b4;
     transform: scale(1.05);
   }
+`;
 
-  &:not(:last-child) {
-    margin-right: 10px;
+const Message = styled.p`
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #34495e;
+  text-align: center;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  font-family: 'Poppins', sans-serif;
+`;
+
+const ModalTitle = styled.h2`
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #34495e;
+`;
+
+const ModalButton = styled(Button)`
+  margin: 10px;
+  background-color: #28a745; /* Zielony przycisk */
+  &:hover {
+    background-color: #218838;
+  }
+
+  &:last-child {
+    background-color: #e74c3c; /* Czerwony przycisk */
+    &:hover {
+      background-color: #c0392b;
+    }
   }
 `;
 
@@ -87,7 +136,8 @@ const Quiz = ({ nickname }) => {
 
   const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(null));
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [ranking, setRanking] = useState([]);
+  const [showModal, setShowModal] = useState(false); // Stan dla popupu
+  const [submitMessage, setSubmitMessage] = useState(false); // Czy wynik został zapisany
 
   const handleAnswerChange = (questionIndex, answerIndex) => {
     const newAnswers = [...userAnswers];
@@ -95,31 +145,22 @@ const Quiz = ({ nickname }) => {
     setUserAnswers(newAnswers);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (userAnswers.some((answer) => answer === null)) {
       alert('Odpowiedz na wszystkie pytania przed zakończeniem testu.');
       return;
     }
 
     const score = calculateScore();
-    const newRanking = [...ranking, { nickname, score }];
-    newRanking.sort((a, b) => b.score - a.score); // Sortowanie wyników malejąco
-    setRanking(newRanking);
 
-    localStorage.setItem('quizRanking', JSON.stringify(newRanking));
-    setIsSubmitted(true);
-  };
-
-  const resetRanking = () => {
-    if (window.confirm('Czy na pewno chcesz zresetować ranking?')) {
-      setRanking([]);
-      localStorage.removeItem('quizRanking');
+    // Zapis wyniku do bazy
+    try {
+      await axios.post('http://localhost:5001/api/results', { nickname, score }); // Upewnij się, że port backendu jest prawidłowy
+      setIsSubmitted(true);
+      setSubmitMessage(true); // Pokazanie komunikatu w popupie
+    } catch (err) {
+      console.error('Błąd podczas zapisywania wyniku:', err);
     }
-  };
-
-  const restartQuiz = () => {
-    setUserAnswers(Array(questions.length).fill(null));
-    setIsSubmitted(false);
   };
 
   const calculateScore = () => {
@@ -131,54 +172,49 @@ const Quiz = ({ nickname }) => {
     }, 0);
   };
 
-  useEffect(() => {
-    const savedRanking = JSON.parse(localStorage.getItem('quizRanking')) || [];
-    setRanking(savedRanking);
-  }, []);
-
   return (
     <Container>
-      <QuizBox>
-        {!isSubmitted ? (
-          <>
-            <Title>Quiz dla {nickname}</Title>
-            {questions.map((q, questionIndex) => (
-              <div key={questionIndex}>
-                <Question>{q.question}</Question>
-                {q.answers.map((answer, answerIndex) => (
-                  <AnswerLabel key={answerIndex}>
-                    <input
-                      type="radio"
-                      name={`question-${questionIndex}`}
-                      value={answerIndex}
-                      checked={userAnswers[questionIndex] === answerIndex}
-                      onChange={() => handleAnswerChange(questionIndex, answerIndex)}
-                    />
-                    {String.fromCharCode(65 + answerIndex)}. {answer}
-                  </AnswerLabel>
-                ))}
-              </div>
-            ))}
-            <Button onClick={handleSubmit}>Zakończ test</Button>
-          </>
-        ) : (
-          <>
-            <Title>Twój wynik: {calculateScore()} / {questions.length}</Title>
-            <h2>Ranking:</h2>
-            <ul>
-              {ranking.map((entry, index) => (
-                <li key={index}>
-                  {index + 1}. {entry.nickname} - {entry.score} punktów
-                </li>
+      {!isSubmitted ? (
+        <QuizBox>
+          <Title>Quiz dla {nickname}</Title>
+          {questions.map((q, questionIndex) => (
+            <div key={questionIndex}>
+              <Question>{q.question}</Question>
+              {q.answers.map((answer, answerIndex) => (
+                <AnswerLabel key={answerIndex}>
+                  <input
+                    type="radio"
+                    name={`question-${questionIndex}`}
+                    value={answerIndex}
+                    checked={userAnswers[questionIndex] === answerIndex}
+                    onChange={() => handleAnswerChange(questionIndex, answerIndex)}
+                  />
+                  {String.fromCharCode(65 + answerIndex)}. {answer}
+                </AnswerLabel>
               ))}
-            </ul>
-            <div>
-              <Button onClick={restartQuiz}>Spróbuj ponownie</Button>
-              <Button onClick={resetRanking}>Resetuj ranking</Button>
             </div>
-          </>
-        )}
-      </QuizBox>
+          ))}
+          <Button onClick={() => setShowModal(true)}>Zakończ test</Button>
+        </QuizBox>
+      ) : (
+        <Message>Dziękuję, wynik został zapisany.</Message>
+      )}
+
+      {showModal && (
+        <ModalOverlay>
+          <ModalContent>
+            {!submitMessage ? (
+              <>
+                <ModalTitle>Czy na pewno chcesz zakończyć test?</ModalTitle>
+                <ModalButton onClick={handleSubmit}>Tak, wyślij</ModalButton>
+                <ModalButton onClick={() => setShowModal(false)}>Wróć do testu</ModalButton>
+              </>
+            ) : (
+              <Message>Dziękuję, wynik został zapisany.</Message>
+            )}
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </Container>
   );
 };
