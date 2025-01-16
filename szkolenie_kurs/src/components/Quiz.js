@@ -76,51 +76,6 @@ const Message = styled.p`
   text-align: center;
 `;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
-const ModalContent = styled.div`
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  width: 90%;
-  max-width: 400px;
-  font-family: 'Poppins', sans-serif;
-`;
-
-const ModalTitle = styled.h2`
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  color: #34495e;
-`;
-
-const ModalButton = styled(Button)`
-  margin: 10px;
-  background-color: #28a745; /* Zielony przycisk */
-  &:hover {
-    background-color: #218838;
-  }
-
-  &:last-child {
-    background-color: #e74c3c; /* Czerwony przycisk */
-    &:hover {
-      background-color: #c0392b;
-    }
-  }
-`;
-
 const Quiz = () => {
   const { state } = useLocation();
   const { nickname } = state || { nickname: 'Nieznany użytkownik' }; // Domyślna wartość
@@ -140,7 +95,6 @@ const Quiz = () => {
 
   const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(null));
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [showModal, setShowModal] = useState(false);
 
   // Sprawdź, czy test został już przesłany
   useEffect(() => {
@@ -207,18 +161,8 @@ const Quiz = () => {
               ))}
             </div>
           ))}
-          <Button onClick={() => setShowModal(true)}>Zakończ test</Button>
+          <Button onClick={handleSubmit}>Zakończ test</Button>
         </QuizBox>
-      )}
-
-      {showModal && (
-        <ModalOverlay>
-          <ModalContent>
-            <ModalTitle>Czy na pewno chcesz zakończyć test?</ModalTitle>
-            <ModalButton onClick={handleSubmit}>Tak, wyślij</ModalButton>
-            <ModalButton onClick={() => setShowModal(false)}>Wróć do testu</ModalButton>
-          </ModalContent>
-        </ModalOverlay>
       )}
     </Container>
   );
