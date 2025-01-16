@@ -95,9 +95,23 @@ const CareerSection = styled.div`
   }
 `;
 
+const DecorativeBar = styled.div`
+  width: 300px; /* Szerokość paska */
+  height: 5px; /* Wysokość paska */
+  background-color:rgb(108, 129, 146); /* Kolor paska */
+  margin-bottom: 15px; /* Odstęp od tekstu */
+  border-radius: 5px; /* Zaokrąglenie brzegów */
+  margin-left: 0; /* Pasek wyrównany do początku tekstu */
+
+  @media (max-width: 768px) {
+    margin-left: auto;
+    margin-right: auto;
+  }
+`;
+
 const CareerText = styled.div`
   flex: 1;
-  margin-right: 40px; /* Większy odstęp między tekstem a obrazem */
+  margin-right: 40px;
 
   @media (max-width: 768px) {
     margin-right: 0;
@@ -105,13 +119,13 @@ const CareerText = styled.div`
   }
 
   h3 {
-    font-size: 1.7rem; /* Nieco większa czcionka */
+    font-size: 1.7rem;
     margin-bottom: 20px;
     color: #2c2c2c;
   }
 
   p {
-    font-size: 1.1rem; /* Nieco większa czcionka */
+    font-size: 1.1rem;
     color: #4f4f4f;
     line-height: 1.8;
     margin-bottom: 20px;
@@ -267,6 +281,7 @@ const Home = () => {
 {/* Sekcja 3 */}
 <CareerSection>
   <CareerText>
+    <DecorativeBar /> {/* Dodanie ozdobnego paska */}
     <h3>Zawód księgowego</h3>
     <p>
       Zawód księgowego oferuje wiele możliwości i satysfakcji zawodowej. To ścieżka kariery dla osób z pasją do finansów i precyzji, zapewniająca stabilność, rozwój i sukces.
