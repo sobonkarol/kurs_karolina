@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import axios from 'axios';
+
+// Dodajemy style globalne
+const GlobalStyle = createGlobalStyle`
+  .unanswered {
+    background-color: #fce5cd; /* Delikatny pomarańczowy */
+  }
+`;
 
 // Stylowanie komponentów
 const Container = styled.div`
@@ -91,7 +98,35 @@ const Message = styled.p`
   text-align: center;
 `;
 
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Półprzezroczyste tło */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Nad wszystkimi elementami */
+`;
+
+const Spinner = styled.div`
+  border: 4px solid #f3f3f3; /* Jasnoszary */
+  border-top: 4px solid #3498db; /* Niebieski */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
 const Quiz = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const { state } = useLocation();
   const { nickname } = state || { nickname: 'Nieznany użytkownik' };
 
@@ -318,70 +353,103 @@ const Quiz = () => {
       }
 ];
 
-  const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(null));
-  const [isSubmitted, setIsSubmitted] = useState(false);
+const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(null));
+const [isSubmitted, setIsSubmitted] = useState(false);
 
-  useEffect(() => {
-    const submitted = localStorage.getItem('quizSubmitted');
-    if (submitted === 'true') {
-      setIsSubmitted(true);
+useEffect(() => {
+  const submitted = localStorage.getItem('quizSubmitted');
+  if (submitted === 'true') {
+    setIsSubmitted(true);
+  }
+}, []);
+
+const handleAnswerChange = (questionIndex, answerIndex) => {
+  const newAnswers = [...userAnswers];
+  newAnswers[questionIndex] = answerIndex;
+  setUserAnswers(newAnswers);
+};
+
+const calculateScore = () => {  // Moved this function definition UP
+  return userAnswers.reduce((score, answer, index) => (answer === questions[index].correct? score + 1: score), 0);
+};
+
+const handleSubmit = async () => {
+  setIsLoading(true); // Włączenie animacji oczekiwania
+
+  const unansweredQuestions = userAnswers.reduce((acc, answer, index) => {
+    if (answer === null) {
+      acc.push(index);
     }
+    return acc;
   }, []);
 
-  const handleAnswerChange = (questionIndex, answerIndex) => {
-    const newAnswers = [...userAnswers];
-    newAnswers[questionIndex] = answerIndex;
-    setUserAnswers(newAnswers);
-  };
-
-  const handleSubmit = async () => {
-    if (userAnswers.some((answer) => answer === null)) {
-      alert('Odpowiedz na wszystkie pytania przed zakończeniem testu.');
-      return;
+  if (unansweredQuestions.length > 0) {
+    // Przeniesienie do pierwszego niewypełnionego pytania
+    const firstUnansweredQuestion = document.querySelector(`#question-${unansweredQuestions[0]}`);
+    if (firstUnansweredQuestion) {
+      firstUnansweredQuestion.scrollIntoView({ behavior: 'smooth' });
     }
 
-    const score = calculateScore();
+    // Podświetlenie pytań, na które nie udzielono odpowiedzi
+    unansweredQuestions.forEach(questionIndex => {
+      const questionElement = document.querySelector(`#question-${questionIndex}`);
+      if (questionElement) {
+        questionElement.classList.add('unanswered');
+      }
+    });
+  } else {
+      const score = calculateScore();
+      try {
+          await axios.post('https://szkoleniekostarskak.netlify.app/.netlify/functions/saveResults', { nickname, score });
+          setIsSubmitted(true);
+          localStorage.setItem('quizSubmitted', 'true');
+      } catch (err) {
+          console.error('Błąd podczas zapisywania wyniku:', err);
+      }
+  }
 
-    try {
-      await axios.post('https://szkoleniekostarskak.netlify.app/.netlify/functions/saveResults', { nickname, score });
-      setIsSubmitted(true);
-      localStorage.setItem('quizSubmitted', 'true');
-    } catch (err) {
-      console.error('Błąd podczas zapisywania wyniku:', err);
-    }
-  };
+  setIsLoading(false); // Wyłączenie animacji oczekiwania
+};
 
-  const calculateScore = () => {
-    return userAnswers.reduce((score, answer, index) => (answer === questions[index].correct ? score + 1 : score), 0);
-  };
-
-  return (
-    <Container>
-      {isSubmitted ? (
-        <Message>Odpowiedzi zostały wysłane.</Message>
-      ) : (
-        <QuizBox>
-          <Title>Quiz dla {nickname}</Title>
-          <Description>Cześć!
-Poniżej znajdziesz test, który pomoże Ci ocenić Twoje umiejętności w zakresie zawodu  księgowej/księgowego. <p>Test składa się 44 pytań zamkniętych bez ograniczeń czasowych.
-</p>Test daje Ci ogólny obraz Twojej wiedzy o tym zawodzie oraz podstawowych zagadnieniach z nim związanych
-Pamiętaj jednak, że jeśli Twój wynik będzie niezadowalający, nie oznacza to, że nie możesz pracować w finansach. Jest to sygnał aby bardziej zagłębić się w obszary tej branży. 🙂</Description>
-          {questions.map((q, questionIndex) => (
-            <div key={questionIndex}>
-              <Question>{q.question}</Question>
-              {q.answers.map((answer, answerIndex) => (
-                <AnswerLabel key={answerIndex}>
-                  <input type="radio" name={`question-${questionIndex}`} value={answerIndex} checked={userAnswers[questionIndex] === answerIndex} onChange={() => handleAnswerChange(questionIndex, answerIndex)} />
-                  {answer}
-                </AnswerLabel>
-              ))}
-            </div>
-          ))}
-          <Button onClick={handleSubmit}>Zakończ test</Button>
-        </QuizBox>
-      )}
-    </Container>
-  );
+return (
+  <Container>
+    <GlobalStyle /> 
+    {isLoading && (
+      <Overlay>
+        <Spinner />
+      </Overlay>
+    )}
+    {isSubmitted ? (
+      <Message>Odpowiedzi zostały wysłane.</Message>
+    ) : (
+      <QuizBox>
+        <Title>Quiz dla {nickname}</Title>
+        <Description>
+          Cześć! Poniżej znajdziesz test, który pomoże Ci ocenić Twoje umiejętności w zakresie zawodu księgowej/księgowego.
+          <p>
+            Test składa się 44 pytań zamkniętych bez ograniczeń czasowych.
+          </p>
+          Test daje Ci ogólny obraz Twojej wiedzy o tym zawodzie oraz podstawowych zagadnieniach z nim związanych.
+          <p>
+            Pamiętaj jednak, że jeśli Twój wynik będzie niezadowalający, nie oznacza to, że nie możesz pracować w finansach. Jest to sygnał, aby bardziej zagłębić się w obszary tej branży. 🙂
+          </p>
+        </Description>
+        {questions.map((q, questionIndex) => (
+          <div key={questionIndex} id={`question-${questionIndex}`}>
+            <Question>{q.question}</Question>
+            {q.answers.map((answer, answerIndex) => (
+              <AnswerLabel key={answerIndex}>
+                <input type="radio" name={`question-${questionIndex}`} value={answerIndex} checked={userAnswers[questionIndex] === answerIndex} onChange={() => handleAnswerChange(questionIndex, answerIndex)} />
+                {answer}
+              </AnswerLabel>
+            ))}
+          </div>
+        ))}
+        <Button onClick={handleSubmit}>Zakończ test</Button>
+      </QuizBox>
+    )}
+  </Container>
+);
 };
 
 export default Quiz;
