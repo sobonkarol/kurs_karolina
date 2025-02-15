@@ -139,7 +139,7 @@ const Quiz = () => {
       {
       question: "2. Co oznacza skrót 'RK'?",
       answers: ["Rejestr klientów", "Raport kasowy", "Rachunek kosztów", "Rejestr kontrahentów"],
-      correct: 2
+      correct: 1
       },
       {
       question: "3. Co oznacza skrót 'US'?",
@@ -154,7 +154,7 @@ const Quiz = () => {
       {
       question: "5. Co oznacza skrót 'FZ' lub 'FVZ'?",
       answers: ["Faktura zaliczkowa", "Faktura zakupu (kosztowa)", "Faktura zewnętrzna", "Faktura zryczałtowana"],
-      correct: 0
+      correct: 1
       },
       {
       question: "6. Co księgowa ukrywa pod oznaczeniem 'JDG'?",
@@ -189,12 +189,12 @@ const Quiz = () => {
       {
       question: "12. Co oznacza skrót 'MPK'?",
       answers: ["Międzynarodowy plan kont", "Miejsce przechowywania ksiąg", "Miejsce powstawania kosztu", "Międzynarodowy Pakt Księgowy"],
-      correct: 0
+      correct: 2
       },
       {
       question: "13. Co oznacza skrót 'WZ'?",
       answers: ["Weryfikacja zasobów", "Wartość zestawienia", "Wewnętrzne zestawienie", "Wydanie zewnętrzne"],
-      correct: 2
+      correct: 3
       },
       {
       question: "14. Co ukrywa się pod skrótem 'RZiS'?",
@@ -229,7 +229,7 @@ const Quiz = () => {
       {
       question: "20. Jaki próg rocznej sprzedaży zobowiązuje firmę do rejestracji jako płatnik VAT:",
       answers: ["300 tys. Zł", "200 tys. Zł", "500 tys. Zł"],
-      correct: 0
+      correct: 1
       },
       {
       question: "21. Jednolity Plik Kontrolny (JPK) to cyfrowy dokument zawierający zestaw danych firmowych, a obowiązek jego składania jest nałożony na każdego:",
@@ -279,12 +279,12 @@ const Quiz = () => {
       {
       question: "30. Otwarcia ksiąg rachunkowych dokonuje się:",
       answers: ["na dzień zmiany zarządu", "na początek każdego miesiąca", "przed walnym zgromadzeniem zarządu", "na dzień ogłoszenia upadłości"],
-      correct: 1
+      correct: 3
       },
       {
       question: "31. W którym roku powołano ogólnopolski 'Związek Księgowych w Polsce'?",
       answers: ["1922", "1926", "1932"],
-      correct: 0
+      correct: 1
       },
       {
       question: "32. Kiedy i na podstawie czyjej decyzji zostało zarejestrowane Stowarzyszenie Księgowych w Polsce (SKwP) po zakończeniu wojny?",
@@ -304,7 +304,7 @@ const Quiz = () => {
       {
       question: "35. Jakie są trzy zasadnicze przekroje strukturalne współczesnej rachunkowości?",
       answers: ["Rachunkowy, Ekonomiczny, Informatyczny", "Funkcjonalny, Przedmiotowy, Formalny", "Strukturalny, Organizacyjny, Procesowy", "Finansowy, Zarządczy, Informacyjny"],
-      correct: 3
+      correct: 1
       },
       {
       question: "36. Jakie są elementy dokumentacji w rachunkowości?",
