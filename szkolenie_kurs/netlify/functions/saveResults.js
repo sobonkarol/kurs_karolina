@@ -6,16 +6,18 @@ const connectDB = async () => {
     }
 };
 
+// Model wyniku z dodanym polem timestamp
 const Result = mongoose.model('Result', {
     nickname: String,
     score: Number,
+    timestamp: { type: Number, required: true }, // Pole timestamp
 });
 
 exports.handler = async (event) => {
     try {
         await connectDB();
-        const { nickname, score } = JSON.parse(event.body);
-        const newResult = new Result({ nickname, score });
+        const { nickname, score, timestamp } = JSON.parse(event.body); // Odbieramy timestamp
+        const newResult = new Result({ nickname, score, timestamp }); // Zapisujemy wynik z timestampem
         await newResult.save();
         return {
             statusCode: 201,
