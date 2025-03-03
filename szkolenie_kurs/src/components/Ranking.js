@@ -46,12 +46,7 @@ const Ranking = () => {
     const fetchRanking = async () => {
       try {
         const response = await axios.get('https://szkoleniekostarskak.netlify.app/.netlify/functions/getResults');
-        // Dodanie aktualnego czasu jako "timestamp" dla każdego elementu
-        const rankingWithTimestamp = response.data.map(entry => ({
-          ...entry,
-          timestamp: new Date().toISOString() // Przypisanie aktualnej daty
-        }));
-        setRanking(rankingWithTimestamp);
+        setRanking(response.data);  // Otrzymanie danych bez nadpisywania timestamp
       } catch (err) {
         console.error('Błąd podczas pobierania rankingu:', err);
       }

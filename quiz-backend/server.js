@@ -1,40 +1,45 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+const handleSubmit = async () => {
+  setIsLoading(true);
 
-// Inicjalizacja aplikacji
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
+  const unansweredQuestions = userAnswers.reduce((acc, answer, index) => {
+    if (answer === null) {
+      acc.push(index);
+    }
+    return acc;
+  }, []);
 
-// Połączenie z MongoDB
-mongoose.connect(process.env.MANGOOSE);
+  if (unansweredQuestions.length > 0) {
+    const firstUnansweredQuestion = document.querySelector(
+      `#question-${unansweredQuestions[0]}`
+    );
+    if (firstUnansweredQuestion) {
+      firstUnansweredQuestion.scrollIntoView({ behavior: "smooth" });
+    }
 
-// Model wyniku z dodatkowym timestamp
-const Result = mongoose.model('Result', new mongoose.Schema({
-  nickname: String,
-  score: Number,
-  timestamp: { type: Date, required: true }  // Dodanie pola timestamp
-}));
+    unansweredQuestions.forEach((questionIndex) => {
+      const questionElement = document.querySelector(
+        `#question-${questionIndex}`
+      );
+      if (questionElement) {
+        questionElement.classList.add("unanswered");
+      }
+    });
+  } else {
+    const score = calculateScore();
+    const timestamp = Date.now(); // Pobranie znacznika czasu
 
-// Endpoint: Zapisanie wyniku
-app.post('/api/results', async (req, res) => {
-  const { nickname, score, timestamp } = req.body;  // Oczekiwanie na timestamp
-  const newResult = new Result({ nickname, score, timestamp: new Date(timestamp) });  // Zapisanie timestampu
-  await newResult.save();
-  res.status(201).send('Wynik zapisany!');
-});
+    try {
+      // Wysłanie danych na serwer
+      await axios.post(
+        "https://szkoleniekostarskak.netlify.app/.netlify/functions/saveResults",
+        { nickname, score, timestamp } // Dodanie timestampu w zapytaniu
+      );
+      setIsSubmitted(true);
+      localStorage.setItem("quizSubmitted", "true");
+    } catch (err) {
+      console.error("Błąd podczas zapisywania wyniku:", err);
+    }
+  }
 
-// Endpoint: Pobranie rankingu
-app.get('/api/results', async (req, res) => {
-  const results = await Result.find().sort({ score: -1 });  // Sortowanie wyników malejąco
-  res.status(200).json(results);
-});
-
-// Start serwera
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+  setIsLoading(false);
+};
