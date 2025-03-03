@@ -46,7 +46,12 @@ const Ranking = () => {
     const fetchRanking = async () => {
       try {
         const response = await axios.get('https://szkoleniekostarskak.netlify.app/.netlify/functions/getResults');
-        setRanking(response.data);
+        // Dodanie aktualnego czasu jako "timestamp" dla każdego elementu
+        const rankingWithTimestamp = response.data.map(entry => ({
+          ...entry,
+          timestamp: new Date().toISOString() // Przypisanie aktualnej daty
+        }));
+        setRanking(rankingWithTimestamp);
       } catch (err) {
         console.error('Błąd podczas pobierania rankingu:', err);
       }
@@ -57,6 +62,10 @@ const Ranking = () => {
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
+    if (isNaN(date)) {
+      console.error('Niepoprawny format timestamp:', timestamp); // Logowanie błędnych wartości
+      return '';
+    }
     return date.toLocaleString(); // Formatuje datę na lokalny format
   };
 
