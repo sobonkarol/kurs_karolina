@@ -613,7 +613,7 @@ answers: [
       try {
         await axios.post(
           "https://szkoleniekostarskak.netlify.app/.netlify/functions/saveResults",
-          { nickname, score, timestamp } // Dołączenie znacznika czasu
+          { nickname, score, timestamp } // Wysłanie timestampu razem z wynikiem
         );
         setIsSubmitted(true);
         localStorage.setItem("quizSubmitted", "true");

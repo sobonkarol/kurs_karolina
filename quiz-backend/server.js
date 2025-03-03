@@ -11,23 +11,24 @@ app.use(bodyParser.json());
 // Połączenie z MongoDB
 mongoose.connect(process.env.MANGOOSE);
 
-// Model wyniku z dodanym timestamp
+// Model wyniku z dodatkowym timestamp
 const Result = mongoose.model('Result', new mongoose.Schema({
   nickname: String,
   score: Number,
-}, { timestamps: true }));  // Dodanie automatycznego timestampu
+  timestamp: { type: Date, required: true }  // Dodanie pola timestamp
+}));
 
 // Endpoint: Zapisanie wyniku
 app.post('/api/results', async (req, res) => {
-  const { nickname, score } = req.body;
-  const newResult = new Result({ nickname, score });
+  const { nickname, score, timestamp } = req.body;  // Oczekiwanie na timestamp
+  const newResult = new Result({ nickname, score, timestamp: new Date(timestamp) });  // Zapisanie timestampu
   await newResult.save();
   res.status(201).send('Wynik zapisany!');
 });
 
 // Endpoint: Pobranie rankingu
 app.get('/api/results', async (req, res) => {
-  const results = await Result.find().sort({ score: -1 }); // Sortowanie wyników malejąco
+  const results = await Result.find().sort({ score: -1 });  // Sortowanie wyników malejąco
   res.status(200).json(results);
 });
 
