@@ -11,11 +11,11 @@ app.use(bodyParser.json());
 // Połączenie z MongoDB
 mongoose.connect(process.env.MANGOOSE);
 
-// Model wyniku
-const Result = mongoose.model('Result', {
+// Model wyniku z dodanym timestamp
+const Result = mongoose.model('Result', new mongoose.Schema({
   nickname: String,
   score: Number,
-});
+}, { timestamps: true }));  // Dodanie automatycznego timestampu
 
 // Endpoint: Zapisanie wyniku
 app.post('/api/results', async (req, res) => {
@@ -35,5 +35,5 @@ app.get('/api/results', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
