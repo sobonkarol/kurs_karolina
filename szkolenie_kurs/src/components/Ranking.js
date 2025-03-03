@@ -36,8 +36,7 @@ const ListItem = styled.li`
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
 `;
 
 const Ranking = () => {
@@ -46,7 +45,7 @@ const Ranking = () => {
   useEffect(() => {
     const fetchRanking = async () => {
       try {
-        const response = await axios.get('https://szkoleniekostarskak.netlify.app/.netlify/functions/getResults'); // Upewnij się, że port backendu jest prawidłowy
+        const response = await axios.get('https://szkoleniekostarskak.netlify.app/.netlify/functions/getResults');
         setRanking(response.data);
       } catch (err) {
         console.error('Błąd podczas pobierania rankingu:', err);
@@ -56,6 +55,11 @@ const Ranking = () => {
     fetchRanking();
   }, []);
 
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString(); // Formatuje datę na lokalny format
+  };
+
   return (
     <Container>
       <Title>Ranking użytkowników</Title>
@@ -64,6 +68,7 @@ const Ranking = () => {
           <ListItem key={index}>
             <span>{index + 1}. {entry.nickname}</span>
             <span>{entry.score} punktów</span>
+            <span>{formatDate(entry.timestamp)}</span>
           </ListItem>
         ))}
       </List>
