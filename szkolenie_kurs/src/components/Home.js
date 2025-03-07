@@ -5,7 +5,6 @@ import { FaRegBuilding, FaLightbulb, FaGraduationCap } from 'react-icons/fa';
 import backgroundImage from '../front.jpg';
 import accountantImage from '../accountant.jpg';
 
-// Stylizacja głównych sekcji
 const MainContainer = styled.div`
   font-family: 'Poppins', sans-serif;
   color: #2c2c2c;
@@ -98,7 +97,7 @@ const CareerSection = styled.div`
 const DecorativeBar = styled.div`
   width: 300px;
   height: 5px;
-  background-color:rgb(132, 147, 159);
+  background-color: rgb(132, 147, 159);
   margin-bottom: 15px;
   border-radius: 5px;
 
@@ -227,10 +226,10 @@ const CloseButton = styled.button`
   position: absolute;
   top: 0px;
   right: 0px;
-  background: none !important; /* Wymuszenie braku tła */
-  border: none !important; /* Wymuszenie braku obramowania */
-  font-size: 1.5rem !important; /* Wymuszenie rozmiaru krzyżyka */
-  color: black !important; /* Wymuszenie koloru */
+  background: none !important;
+  border: none !important;
+  font-size: 1.5rem !important;
+  color: black !important;
   cursor: pointer;
   padding: 0;
   line-height: 1;
@@ -240,25 +239,26 @@ const Home = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [nickname, setNickname] = useState('');
+  const [quizExpired, setQuizExpired] = useState(false);
 
   const handleStart = () => {
+    setQuizExpired(true);
     setShowPopup(true);
   };
 
   const handlePopupSubmit = () => {
-    if (nickname.trim()) {
+    if (nickname.trim() && !quizExpired) {
       navigate('/quiz', { state: { nickname } });
     }
+    setShowPopup(false);
   };
 
   return (
     <MainContainer>
-      {/* Sekcja 1 */}
       <HeroSection>
         <HeroTitle>Młodzi księgowi - przyszłość w liczbach</HeroTitle>
       </HeroSection>
 
-      {/* Sekcja 2 */}
       <InfoSection>
         <InfoBox bgColor="#f5f5f5" borderColor="#8c8c8c" iconColor="#8c8c8c">
           <FaRegBuilding />
@@ -284,14 +284,13 @@ const Home = () => {
           <FaGraduationCap />
           <h3>Jak wygląda ścieżka edukacyjna?</h3>
           <ul>
-             <li>Szkoła średnia – przedmioty związane z podstawami ekonomii i rachunkowości.</li>
-             <li>Studia – kierunki takie jak księgowość, finanse czy ekonomia.</li>
-             <li>Certyfikaty zawodowe – np. ACCA, CIMA, czy certyfikat biegłego rewidenta.</li>
+            <li>Szkoła średnia – przedmioty związane z podstawami ekonomii i rachunkowości.</li>
+            <li>Studia – kierunki takie jak księgowość, finanse czy ekonomia.</li>
+            <li>Certyfikaty zawodowe – np. ACCA, CIMA, czy certyfikat biegłego rewidenta.</li>
           </ul>
         </InfoBox>
       </InfoSection>
 
-      {/* Sekcja 3 */}
       <CareerSection>
         <CareerText>
           <DecorativeBar />
@@ -306,7 +305,6 @@ const Home = () => {
         <CareerImage src={accountantImage} alt="Człowiek z laptopem" />
       </CareerSection>
 
-      {/* Sekcja 4 */}
       <FooterSection>
         <h3>Dołącz do młodych księgowych!</h3>
         <StartButton onClick={handleStart}>Zacznij kurs</StartButton>
@@ -314,17 +312,23 @@ const Home = () => {
 
       {showPopup && (
         <PopupContainer>
-<PopupContent>
-  <CloseButton onClick={() => setShowPopup(false)}>×</CloseButton>
-  <h3>Podaj swoje imię i nazwisko</h3>
-  <input
-    type="text"
-    placeholder="Imię i nazwisko"
-    value={nickname}
-    onChange={(e) => setNickname(e.target.value)}
-  />
-  <button onClick={handlePopupSubmit}>Rozpocznij kurs</button>
-</PopupContent>
+          <PopupContent>
+            <CloseButton onClick={() => setShowPopup(false)}>×</CloseButton>
+            {quizExpired ? (
+              <h3>Quiz wygasł</h3>
+            ) : (
+              <>
+                <h3>Podaj swoje imię i nazwisko</h3>
+                <input
+                  type="text"
+                  placeholder="Imię i nazwisko"
+                  value={nickname}
+                  onChange={(e) => setNickname(e.target.value)}
+                />
+                <button onClick={handlePopupSubmit}>Rozpocznij kurs</button>
+              </>
+            )}
+          </PopupContent>
         </PopupContainer>
       )}
     </MainContainer>
